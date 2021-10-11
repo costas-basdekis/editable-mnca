@@ -42,5 +42,10 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build
-    - run: CI= npm run deploy
+    - name: Deploy to GH pages
+      run: |
+        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        npm run deploy -- --user "github-actions-bot <support+actions@github.com>"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
