@@ -25,7 +25,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "predeploy": "npm run build",
     "deploy": "gh-pages --dist build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --passWithNoTests",
