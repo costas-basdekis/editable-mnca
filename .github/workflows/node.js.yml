@@ -14,26 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Create package-lock.json
-      run: npm install --package-lock
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: 16.x
         cache: 'npm'
-    - run: npm install
+    - run: npm ci
     - run: npm run build
     - run: npm test
   deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Create package-lock.json
-      run: npm install --package-lock
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: 16.x
         cache: 'npm'
-    - run: npm install
+    - run: npm ci
     - run: npm run deploy
