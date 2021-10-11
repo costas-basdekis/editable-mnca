@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: 16.x
         cache: 'npm'
-    - run: npm ci
+    - run: npm install
     - run: npm run build
     - run: npm test
   deploy:
@@ -31,5 +31,5 @@ jobs:
       with:
         node-version: 16.x
         cache: 'npm'
-    - run: npm ci
+    - run: npm install
     - run: npm run deploy
