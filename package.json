@@ -6,7 +6,6 @@
   "main": "src/index.js",
   "homepage": "https://costas-basdekis.github.io/editable-mnca/",
   "dependencies": {
-    "gh-pages": "3.2.3",
     "handlebars": "4.7.7",
     "handlebars-helpers": "0.10.0",
     "prop-types": "15.7.2",
@@ -21,6 +20,7 @@
   },
   "devDependencies": {
     "@babel/runtime": "7.13.8",
+    "gh-pages": "3.2.3",
     "typescript": "^3.2.1"
   },
   "scripts": {
