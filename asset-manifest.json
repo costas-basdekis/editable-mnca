@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/editable-mnca/static/css/main.7d1f2618.chunk.css",
+    "main.js": "/editable-mnca/static/js/main.630f99aa.chunk.js",
+    "main.js.map": "/editable-mnca/static/js/main.630f99aa.chunk.js.map",
+    "runtime-main.js": "/editable-mnca/static/js/runtime-main.db16d699.js",
+    "runtime-main.js.map": "/editable-mnca/static/js/runtime-main.db16d699.js.map",
+    "static/js/2.de340182.chunk.js": "/editable-mnca/static/js/2.de340182.chunk.js",
+    "static/js/2.de340182.chunk.js.map": "/editable-mnca/static/js/2.de340182.chunk.js.map",
+    "index.html": "/editable-mnca/index.html",
+    "static/css/main.7d1f2618.chunk.css.map": "/editable-mnca/static/css/main.7d1f2618.chunk.css.map",
+    "static/js/2.de340182.chunk.js.LICENSE.txt": "/editable-mnca/static/js/2.de340182.chunk.js.LICENSE.txt",
+    "static/media/copyTexture.446d9bff.frag": "/editable-mnca/static/media/copyTexture.446d9bff.frag",
+    "static/media/default.ac1cc8ab.vert": "/editable-mnca/static/media/default.ac1cc8ab.vert",
+    "static/media/mnca.36d3050f.frag": "/editable-mnca/static/media/mnca.36d3050f.frag"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.db16d699.js",
+    "static/js/2.de340182.chunk.js",
+    "static/css/main.7d1f2618.chunk.css",
+    "static/js/main.630f99aa.chunk.js"
+  ]
+}
