@@ -43,10 +43,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build
-    - name: Debug build
-      run: |
-        ls /home/runner/work/editable-mnca/editable-mnca/
-        ls /home/runner/work/editable-mnca/editable-mnca/build || echo "No build"
+        path: build
     - name: Deploy to GH pages
       run: |
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
