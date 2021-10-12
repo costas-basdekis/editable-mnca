@@ -3,22 +3,42 @@ import React, { Component, Fragment } from "react";
 import {createSelector} from "reselect";
 
 import Renderer from "./components/Renderer";
-import {vertexShaderCode, copyTextureCode, getMncaCode} from "./shaders";
+import {getVertexShaderCode, getCopyTextureCode, getGetMncaCode} from "./shaders";
 import ControlPanel from "./components/ControlPanel";
 import Editorial from "./components/Editorial";
 import createFunctionRef from "./components/createFunctionRef";
 
-const mainSources = [vertexShaderCode, copyTextureCode];
+const getMainSources = async () => {
+  const vertexShaderCode = await getVertexShaderCode()
+  const copyTextureCode = await getCopyTextureCode();
+  return [vertexShaderCode, copyTextureCode];
+}
 
 class App extends Component {
+  vertexShaderCode = null;
   state = {
     ...ControlPanel.getInitialSettingsAndConfiguration(),
-    texturesSources: [],
+    mainSources: null,
+    texturesSources: null,
     percentagesActive: {
       monochrome: null,
       red: null, green: null, blue: null,
     },
   };
+
+  componentDidMount() {
+    this.updateMainSources();
+    this.updateTextureSources();
+  }
+
+  updateMainSources = async () => {
+    if (this.state.mainSources !== null) {
+      return;
+    }
+    const mainSources = await getMainSources();
+    this.vertexShaderCode = mainSources[0];
+    this.setState({mainSources});
+  }
 
   restartRef = createFunctionRef();
 
@@ -26,20 +46,22 @@ class App extends Component {
     const {
       settings, 
       initialConfiguration, configuration, 
-      texturesSources,
+      mainSources, texturesSources,
       percentagesActive,
     } = this.state;
 
     return (
       <div>
         <Editorial />
-        <Renderer 
-          mainSources={mainSources}
-          texturesSources={texturesSources}
-          getFrameUniforms={this.getFrameUniforms} 
-          restartRef={this.restartRef}
-          onRender={this.onRender}
-        />
+        {mainSources !== null && texturesSources !== null ? (
+          <Renderer 
+            mainSources={mainSources}
+            texturesSources={texturesSources}
+            getFrameUniforms={this.getFrameUniforms} 
+            restartRef={this.restartRef}
+            onRender={this.onRender}
+          />
+        ) : null}
         <div>
           Percentage active{" "}
           {settings.monochrome ? (
@@ -74,9 +96,7 @@ class App extends Component {
   }
 
   onConfigurationChange = configuration => {
-    this.setState({configuration}, () => {
-      this.setState({texturesSources: this.texturesSources});
-    });
+    this.setState({configuration}, this.updateTextureSources());
   }
 
   neighbourhoodsSelector = ({configuration: {neighbourhoods}}) => neighbourhoods;
@@ -197,13 +217,15 @@ class App extends Component {
     }
   };
 
+  getMncaCode = null;
+
   texturesSourcesSelector = createSelector(
     this.frameUniformsSelector,
     frameUniforms => {
       return [
         [
-          vertexShaderCode, 
-          getMncaCode(frameUniforms, this.state.configuration, this.state.settings),
+          this.vertexShaderCode, 
+          this.getMncaCode(frameUniforms, this.state.configuration, this.state.settings),
         ],
       ];
     },
@@ -213,10 +235,14 @@ class App extends Component {
     return this.texturesSourcesSelector(this.state);
   }
 
-  state = {
-    ...this.state,
-    texturesSources: this.texturesSources,
+  updateTextureSources = async () => {
+    await this.updateMainSources();
+    if (this.getMncaCode === null) {
+      this.getMncaCode = await getGetMncaCode();
+    }
+    this.setState({texturesSources: this.texturesSources});
   };
 }
 
 export default App;
+

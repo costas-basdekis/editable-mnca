@@ -4,17 +4,36 @@ import {createSelector} from "reselect";
 
 import vertexShaderCodeRaw from "./default.vert";
 import copyTextureCodeRaw from "./copyTexture.frag";
-import mncaCodeRaw from "./mnca.frag";
+import mncaCodeTemplate from "./mnca.frag";
 
 helpers.comparison();
+
+function createFileLoader(streamOrPath) {
+  async function getContents() {
+    if (getContents.contents === null) {
+      if (streamOrPath.startsWith("data:")) {
+        const stream = streamOrPath;
+        getContents.contents = fromOctetStream(stream);
+      } else {
+        const path = streamOrPath;
+        const response = await fetch(path);
+        getContents.contents = await response.text();
+      }
+    }
+    return getContents.contents;
+  }
+  getContents.contents = null;
+
+  return getContents;
+}
 
 function fromOctetStream(text) {
   return atob(text.split(",", 2)[1]);
 }
 
-export const vertexShaderCode = fromOctetStream(vertexShaderCodeRaw);
-export const copyTextureCode = fromOctetStream(copyTextureCodeRaw);
-const mncaCodeTemplate = Handlebars.compile(fromOctetStream(mncaCodeRaw));
+export const getVertexShaderCode = createFileLoader(vertexShaderCodeRaw);
+export const getCopyTextureCode = createFileLoader(copyTextureCodeRaw);
+const getMncaCodeTemplate = createFileLoader(mncaCodeTemplate);
 const mncaCodeArgumentsSelector = createSelector(
   createSelector(
     (_, {neighbourhoods}) => neighbourhoods,
@@ -40,10 +59,19 @@ const mncaCodeArgumentsSelector = createSelector(
     };
   },
 );
-const mncaCodeSelector = createSelector(
-  mncaCodeArgumentsSelector,
-  mncaCodeTemplate,
-);
-export function getMncaCode(uniforms, configuration, settings) {
-  return mncaCodeSelector(uniforms, configuration, settings);
+let getMncaCodeSelector = null;
+export async function getGetMncaCode() {
+  if (getMncaCodeSelector === null) {
+    const mncaCodeTemplate = await getMncaCodeTemplate();
+    const mncaCodeSelector = createSelector(
+      mncaCodeArgumentsSelector,
+      Handlebars.compile(mncaCodeTemplate),
+    );
+    getMncaCodeSelector = function getMncaCodeSelector(uniforms, configuration, settings) {
+      return mncaCodeSelector(uniforms, configuration, settings);
+    }
+  }
+
+  return getMncaCodeSelector;
 }
+
